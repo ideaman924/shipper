@@ -1,0 +1,52 @@
+{% extends 'user_base.html' %}
+
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% translate "Statistics" %}{% endblock %}
+
+{% block head %}
+    <style>
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: scale-down;
+        }
+
+        .card-url {
+            color: var(--bs-body-color);
+            text-decoration: none;
+        }
+        
+        div.disabled-device-card img {
+            filter: grayscale(100%);
+            -webkit-filter: grayscale(100%);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    {% include 'debug_warning.html' %}
+
+    <div class="container">
+        <div class="row row-cols-1">
+            <h1>Popular devices</h1>
+            
+            {% for rank in popular_devices_ranking %}
+                <div class="card h-100">
+                    <p><strong>{{ rank.placement }}</strong></p>
+                    {% if rank.device.photo %}
+                        <img src="{{ rank.device.photo }}" class="card-img-top" alt='{% translate "Device photo" %}'>
+                    {% else %}
+                        <img src="{% static 'img/no_device_image.png' %}" class="card-img-top" alt='{% translate "Device photo placeholder image" %}'>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ rank.device }}</h5>
+                    </div>
+                </div>
+            {% endfor %} 
+        
+        </div>
+    </div>
+{% endblock %}
