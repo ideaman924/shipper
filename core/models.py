@@ -83,7 +83,7 @@ class Device(models.Model):
         return reverse("downloads_device", kwargs={"codename": self.codename})
 
     def get_statistics_count(self):
-        return self.device_stats.all().count() 
+        return self.device_stats.count() 
 
 
 # Mirror Server Model
