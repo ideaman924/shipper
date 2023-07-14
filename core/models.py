@@ -1,5 +1,6 @@
 import ast
 
+from PIL import Image
 from auditlog.registry import auditlog
 from constance import config
 from django.contrib import admin
@@ -56,6 +57,23 @@ class Device(models.Model):
 
     def __str__(self):
         return "{} {} ({})".format(self.manufacturer, self.name, self.codename)
+
+    def has_photo(self):
+        return self.photo_url != "" or self.photo != ""
+
+    def get_image_dimensions(self):
+        img = Image.open(self.photo)
+
+        return {
+            "width": img.width,
+            "height": img.height,
+        }
+
+    def get_image_width(self):
+        return self.get_image_dimensions()["width"]
+
+    def get_image_height(self):
+        return self.get_image_dimensions()["height"]
 
     def get_enabled_builds(self):
         return self.builds.filter(enabled=True)

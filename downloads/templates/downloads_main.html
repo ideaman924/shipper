@@ -7,6 +7,18 @@
 
 {% block head %}
 <link rel="stylesheet" href="{% static 'css/card.css' %}">
+
+<!--suppress CssUnusedSymbol -->
+<style>
+    .fade-box .lazyload, .fade-box .lazyloading {
+		opacity: 0;
+		transition: opacity 400ms;
+	}
+
+	.fade-box img.lazyloaded {
+		opacity: 1;
+	}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -27,11 +39,29 @@
                     >
                             <a class="card-url" href="{% url 'downloads_device' codename=device.codename %}">
                                 <div class="card h-100">
-                                    {% if device.photo_url %}
-                                        <img src="{{ device.photo_url }}" class="card-img-top" alt='{% translate "Device photo" %}'>
-                                    {% else %}
-                                        <img src="{% static 'img/no_device_image.png' %}" class="card-img-top" alt='{% translate "Device photo placeholder image" %}'>
-                                    {% endif %}
+
+                                        {% if device.photo %}
+                                            <div class="ratio-box fade-box">
+                                                <img class="card-img-top thumbhash"
+                                                 width="{{ device.get_image_width }}"
+                                                 height="{{ device.get_image_height }}"
+                                                 src="{{ device.photo_thumbhash }}"
+                                                 alt='{% translate "Low-quality device photo" %}'/>
+
+                                                <!--suppress RequiredAttributes -->
+                                                <img class="card-img-top lazyload"
+                                                 width="{{ device.get_image_width }}"
+                                                 height="{{ device.get_image_height }}"
+                                                 data-src="{{ device.photo }}"
+                                                 alt='{% translate "Device photo" %}' />
+                                            </div>
+                                        {% else %}
+                                            <img
+                                            class="card-img-top"
+                                            src="{% static 'img/no_device_image.png' %}"
+                                            alt='{% translate "Device photo placeholder image" %}'/>
+                                        {% endif %}
+
                                     <div class="card-body">
                                         {% if device.status %}
                                             <h5 class="card-title">{{ device }}</h5>
@@ -47,4 +77,21 @@
             {% endfor %}
         </div>
     </div>
+
+
+    <!--suppress JSUnresolvedReference -->
+    <script>
+    import * as ThumbHash from {% static 'js/thumbhash.js' %}
+
+    let images = document.querySelectorAll("img.thumbhash");
+
+    // Loop over all the images and load the placeholder from thumbhash
+    for (let i = 0; i < images.length; i++) {
+        const hash = images[i].src;
+        images[i].src = ThumbHash.thumbHashToDataURL(hash);
+    }
+    </script>
+
+    <!--suppress HtmlUnknownTarget -->
+    <script src={% static 'js/lazysizes.min.js' %} async=""></script>
 {% endblock %}
