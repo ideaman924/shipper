@@ -88,7 +88,9 @@
     // Loop over all the images and load the placeholder from thumbhash
     for (let i = 0; i < images.length; i++) {
         const hash = images[i].src;
-        images[i].src = ThumbHash.thumbHashToDataURL(hash);
+        const base64ToBinary = base64 => new Uint8Array(atob(base64).split('').map(x => x.charCodeAt(0)))
+        const binaryHash = base64ToBinary(hash);
+        images[i].src = ThumbHash.thumbHashToDataURL(binaryHash);
     }
     </script>
 
