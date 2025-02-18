@@ -1,4 +1,4 @@
-humanize==4.11.0
+humanize==4.12.1
 loguru==0.7.3
 requests==2.32.3
 rich==13.9.4
